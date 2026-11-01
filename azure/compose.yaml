@@ -1,0 +1,35 @@
+services:
+  enshrouded:
+    container_name: enshrouded-server
+    image: sknnr/enshrouded-dedicated-server:latest
+    restart: unless-stopped
+    stop_grace_period: 2m
+    environment:
+      - EXTERNAL_CONFIG=1
+    ports:
+      - "15637:15637/udp"
+      - "27015:27015/udp"
+    ulimits:
+      nofile:
+        soft: 1048576
+        hard: 1048576
+    # create_host_path is off so the container fails to start, rather than
+    # saving to the OS disk, if the data disk is not mounted.
+    volumes:
+      # Keeps the downloaded game files when the container is recreated
+      - type: bind
+        source: /mnt/gamedata/install
+        target: /home/steam/enshrouded
+        bind:
+          create_host_path: false
+      - type: bind
+        source: /mnt/gamedata/savegame
+        target: /home/steam/enshrouded/savegame
+        bind:
+          create_host_path: false
+      # Built by update.sh from enshrouded_server.json and the local password
+      - type: bind
+        source: /opt/enshrouded/enshrouded_server.json
+        target: /home/steam/enshrouded/enshrouded_server.json
+        bind:
+          create_host_path: false
