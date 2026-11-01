@@ -37,4 +37,8 @@ mv -f "$tmp" "$config"
 "${compose[@]}" pull
 "${compose[@]}" up --detach --force-recreate
 
+cp "$repo/azure/enshrouded-backup.service" "$repo/azure/enshrouded-backup.timer" /etc/systemd/system/
+systemctl daemon-reload
+systemctl enable --now enshrouded-backup.timer
+
 echo "Update complete"
