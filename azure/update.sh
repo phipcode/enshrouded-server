@@ -39,6 +39,8 @@ mv -f "$tmp" "$config"
 
 cp "$repo/azure/enshrouded-backup.service" "$repo/azure/enshrouded-backup.timer" /etc/systemd/system/
 systemctl daemon-reload
-systemctl enable --now enshrouded-backup.timer
+systemctl enable enshrouded-backup.timer
+# Restart rather than start, so a changed schedule applies straight away
+systemctl restart enshrouded-backup.timer
 
 echo "Update complete"

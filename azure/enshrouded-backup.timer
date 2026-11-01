@@ -1,9 +1,9 @@
 [Unit]
-Description=Back up the Enshrouded world every 30 minutes
+Description=Back up the Enshrouded world every 5 minutes
 
 [Timer]
-OnBootSec=10min
-OnUnitActiveSec=30min
+OnBootSec=5min
+OnUnitActiveSec=5min
 
 [Install]
 WantedBy=timers.target

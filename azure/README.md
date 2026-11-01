@@ -18,7 +18,7 @@ This restarts the server, so players are disconnected.
 
 ## Backups
 
-`enshrouded-backup.timer` runs `backup.sh` 10 minutes after boot and every 30 minutes after that. It uploads to Azure Storage only if the world has changed. `update.sh` installs the timer.
+`enshrouded-backup.timer` runs `backup.sh` 5 minutes after boot and every 5 minutes after that. It uploads to Azure Storage only if the world has changed. `update.sh` installs the timer.
 
 ## Files on the VM
 
