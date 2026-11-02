@@ -39,6 +39,31 @@ token=$(curl -fsS --max-time 10 -H Metadata:true --get "$imds/identity/oauth2/to
   --data-urlencode "resource=https://storage.azure.com/" \
   --data-urlencode "client_id=$client_id" | jq -r .access_token)
 
+# Stops before deleting anything if any part of the list can't be read.
+prune_backups() {
+  local page marker="" names="" name
+  while :; do
+    page=$(curl -fsS --max-time 60 --get \
+      -H "Authorization: Bearer $token" \
+      -H "x-ms-version: 2021-08-06" \
+      --data-urlencode "restype=container" \
+      --data-urlencode "comp=list" \
+      --data-urlencode "prefix=enshrouded-" \
+      --data-urlencode "marker=$marker" \
+      "https://$account.blob.core.windows.net/$container") || return 1
+    names+="$(grep -oP '(?<=<Name>)[^<]+' <<< "$page" || true)"$'\n'
+    marker=$(grep -oP '(?<=<NextMarker>)[^<]+' <<< "$page" || true)
+    [ -n "$marker" ] || break
+  done
+
+  grep . <<< "$names" | "$(dirname "$0")/backups-to-delete.sh" | while read -r name; do
+    curl -fsS --max-time 30 -X DELETE \
+      -H "Authorization: Bearer $token" \
+      -H "x-ms-version: 2021-08-06" \
+      "https://$account.blob.core.windows.net/$container/$name" || exit 1
+  done
+}
+
 blob="enshrouded-$(date -u +%Y-%m-%dT%H%M%SZ).tgz"
 curl -fsS --max-time 120 --upload-file "$archive" \
   -H "Authorization: Bearer $token" \
@@ -50,5 +75,8 @@ curl -fsS --max-time 120 --upload-file "$archive" \
 # Only recorded after a successful upload, so a failed backup is retried next time.
 mkdir -p "$(dirname "$state")"
 echo "$hash" > "$state"
+
+# A failed cleanup must not fail the backup, and it's tried again after the next one.
+prune_backups || echo "Could not clean up old backups" >&2
 
 echo "Backup complete: $blob"
