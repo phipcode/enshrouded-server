@@ -18,7 +18,7 @@ If `ADMIN_PASSWORD` isn't set, the `Admin` group is left out, so nobody gets adm
 
 ## Updates
 
-- **Game:** updates by itself every time the container starts.
+- **Game:** updates by itself every time the container starts. `fast-start.sh` skips the image's full check of all 8 GB of game files, so Steam only downloads what changed. If that update fails, the next start runs the full check once to repair the install.
 - **Container image:** `update.sh` pulls the latest image.
 
 ## Backups

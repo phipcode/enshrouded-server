@@ -3,6 +3,8 @@ services:
     container_name: enshrouded-server
     image: sknnr/enshrouded-dedicated-server:latest
     restart: unless-stopped
+    # Skips the full check of the game files on every start. See fast-start.sh
+    entrypoint: ["/bin/bash", "/home/steam/fast-start.sh"]
     stop_grace_period: 2m
     environment:
       - EXTERNAL_CONFIG=1
@@ -25,6 +27,12 @@ services:
       - type: bind
         source: /mnt/gamedata/savegame
         target: /home/steam/enshrouded/savegame
+        bind:
+          create_host_path: false
+      - type: bind
+        source: /opt/enshrouded/repo/azure/fast-start.sh
+        target: /home/steam/fast-start.sh
+        read_only: true
         bind:
           create_host_path: false
       # Built by update.sh from enshrouded_server.json and the local password
