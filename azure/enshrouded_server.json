@@ -6,8 +6,9 @@
 	"queryPort": 15637,
 	"slotCount": 16,
 	"tags": [
-		"Australia",
-		"Casual"
+		"English",
+		"BaseBuilding",
+		"Exploration"
 	],
 	"voiceChatMode": "Proximity",
 	"enableVoiceChat": true,
