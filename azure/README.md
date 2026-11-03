@@ -9,7 +9,12 @@ Settings for the Enshrouded server running on the Azure VM. The infrastructure i
 
 This restarts the server, so players are disconnected.
 
-**This repo is public, so never commit a password.** Leave `password` empty in `enshrouded_server.json`. `update.sh` fills it in on the VM from `/opt/enshrouded/secrets.env`, and every user group gets the same password.
+**This repo is public, so never commit a password.** Leave `password` empty in `enshrouded_server.json`. `update.sh` fills it in on the VM from `/opt/enshrouded/secrets.env`:
+
+- The `Admin` group gets `ADMIN_PASSWORD`, and can kick, ban and open other players' inventories.
+- Every other group gets `SERVER_PASSWORD`, and can build but not kick, ban or open inventories.
+
+If `ADMIN_PASSWORD` isn't set, the `Admin` group is left out, so nobody gets admin powers.
 
 ## Updates
 

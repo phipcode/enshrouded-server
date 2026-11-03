@@ -26,10 +26,22 @@ if [ -z "${SERVER_PASSWORD:-}" ]; then
   exit 1
 fi
 
-# The repo is public, so the password is only added here, on the VM.
+# The repo is public, so the passwords are only added here, on the VM.
+# The Admin group gets its own password, and every other group gets the player password.
+if [ -z "${ADMIN_PASSWORD:-}" ]; then
+  # An Admin group without its own password would give admin powers to every player.
+  echo "ADMIN_PASSWORD is not set in $base/secrets.env, so the Admin group is left out" >&2
+  filter='del(.userGroups[] | select(.name == "Admin")) | .userGroups[].password = env.SERVER_PASSWORD'
+elif [ "$ADMIN_PASSWORD" = "$SERVER_PASSWORD" ]; then
+  echo "ADMIN_PASSWORD must be different from SERVER_PASSWORD" >&2
+  exit 1
+else
+  filter='.userGroups[] |= (.password = if .name == "Admin" then env.ADMIN_PASSWORD else env.SERVER_PASSWORD end)'
+fi
+
 tmp=$(mktemp "$base/config.XXXXXX")
 trap 'rm -f "$tmp"' EXIT
-jq '.userGroups[].password = env.SERVER_PASSWORD' "$repo/azure/enshrouded_server.json" > "$tmp"
+jq "$filter" "$repo/azure/enshrouded_server.json" > "$tmp"
 chown 10000:10000 "$tmp"
 chmod 640 "$tmp"
 mv -f "$tmp" "$config"
