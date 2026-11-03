@@ -68,7 +68,7 @@
 			"name": "Default",
 			"password": "",
 			"canKickBan": false,
-			"canAccessInventories": false,
+			"canAccessInventories": true,
 			"canEditWorld": true,
 			"canEditBase": true,
 			"canExtendBase": true,
