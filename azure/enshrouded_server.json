@@ -1,16 +1,18 @@
 {
-	"name": "Phiptech Enshrouded",
+	"name": "Phiptech Enshrouded | AU Casual",
 	"saveDirectory": "./savegame",
 	"logDirectory": "./logs",
 	"ip": "0.0.0.0",
 	"queryPort": 15637,
 	"slotCount": 16,
 	"tags": [
+		"Australia",
+		"Casual"
 	],
 	"voiceChatMode": "Proximity",
-	"enableVoiceChat": false,
-	"enableTextChat": false,
-	"gameSettingsPreset": "Default",
+	"enableVoiceChat": true,
+	"enableTextChat": true,
+	"gameSettingsPreset": "Custom",
 	"gameSettings": {
 		"playerHealthFactor": 1,
 		"playerManaFactor": 1,
