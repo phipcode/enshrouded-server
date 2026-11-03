@@ -54,10 +54,20 @@
 	},
 	"userGroups": [
 		{
-			"name": "Default",
+			"name": "Admin",
 			"password": "",
 			"canKickBan": true,
 			"canAccessInventories": true,
+			"canEditWorld": true,
+			"canEditBase": true,
+			"canExtendBase": true,
+			"reservedSlots": 0
+		},
+		{
+			"name": "Default",
+			"password": "",
+			"canKickBan": false,
+			"canAccessInventories": false,
 			"canEditWorld": true,
 			"canEditBase": true,
 			"canExtendBase": true,
