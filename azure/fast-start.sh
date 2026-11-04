@@ -16,14 +16,19 @@ if [ -e "$marker" ]; then
 fi
 
 # Keep Steam's record of what's installed and drop "validate", so Steam only
-# downloads what changed. The marker is cleared once the update succeeds.
+# downloads what changed. After a game patch, Steam often reports "state is 0x6"
+# on the first try and succeeds on the second, so retry the update once.
+# The marker is cleared once the update succeeds.
 sed -e '/appmanifest_/d' \
     -e 's/" validate /" /' \
+    -e 's#^if ! "[$]{STEAMCMD_PATH}/steamcmd.sh"#if ! steamcmd_with_retry#' \
+    -e '/^if ! steamcmd_with_retry/i steamcmd_with_retry() { "${STEAMCMD_PATH}/steamcmd.sh" "$@" || { echo "Steam update failed, trying once more"; "${STEAMCMD_PATH}/steamcmd.sh" "$@"; }; }' \
     -e "/^# Config handling/i rm -f \"$marker\"" \
     "$original" > "$fast"
 
 # If the image's script has changed and these edits no longer apply, use it unchanged.
-if grep -qE 'appmanifest_| validate ' "$fast" || ! grep -qF "$marker" "$fast"; then
+if grep -qE 'appmanifest_| validate ' "$fast" || ! grep -qF "$marker" "$fast" ||
+   ! grep -q '^if ! steamcmd_with_retry' "$fast"; then
   echo "The image's entrypoint.sh has changed, so starting it unchanged"
   exec "$original"
 fi
