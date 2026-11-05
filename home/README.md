@@ -41,6 +41,7 @@ can use Docker, or put `sudo` in front of the `docker` commands.
    ```
 
    Keep the `.tgz` outside the repo folder.
+
 5. Start it. The first start downloads about 8 GB of game files:
 
    ```bash
@@ -49,6 +50,7 @@ can use Docker, or put `sudo` in front of the `docker` commands.
    ```
 
    It's ready when the log says **Server is up**. Press Ctrl+C to stop watching the log (the server keeps running).
+
 6. Let friends in. Forward UDP ports **15637** and **27015** on your router to this machine,
    and allow them through its firewall:
 
