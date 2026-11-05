@@ -3,9 +3,12 @@ services:
     container_name: enshrouded-server
     image: sknnr/enshrouded-dedicated-server:latest
     restart: unless-stopped
-    # Skips the full check of the game files on every start. See ../azure/fast-start.sh
-    entrypoint: ["/bin/bash", "/home/steam/fast-start.sh"]
+    # Adds the passwords to the settings, then starts with ../azure/fast-start.sh,
+    # which skips the full check of the game files on every start.
+    entrypoint: ["/bin/bash", "/home/steam/home-start.sh"]
     stop_grace_period: 2m
+    # SERVER_PASSWORD and ADMIN_PASSWORD. Copy secrets.env.example to start.
+    env_file: secrets.env
     environment:
       - EXTERNAL_CONFIG=1
     ports:
@@ -15,8 +18,9 @@ services:
       nofile:
         soft: 1048576
         hard: 1048576
-    # setup.sh creates these folders. create_host_path is off so a wrong
-    # ENSHROUDED_DATA fails to start, rather than starting an empty world.
+    # The data folders must exist and be owned by 10000:10000 (see README.md).
+    # create_host_path is off so a missing folder stops the start, rather than
+    # creating a root-owned folder and an empty world.
     volumes:
       - type: bind
         source: ${ENSHROUDED_DATA:-/srv/enshrouded}/install
@@ -29,14 +33,21 @@ services:
         bind:
           create_host_path: false
       - type: bind
+        source: ./start.sh
+        target: /home/steam/home-start.sh
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
         source: ../azure/fast-start.sh
         target: /home/steam/fast-start.sh
         read_only: true
         bind:
           create_host_path: false
-      # Built by setup.sh from ../azure/enshrouded_server.json and secrets.env
+      # The same server settings as Azure, without the passwords
       - type: bind
-        source: ${ENSHROUDED_DATA:-/srv/enshrouded}/enshrouded_server.json
-        target: /home/steam/enshrouded/enshrouded_server.json
+        source: ../azure/enshrouded_server.json
+        target: /home/steam/enshrouded_server.template.json
+        read_only: true
         bind:
           create_host_path: false

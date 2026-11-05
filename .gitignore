@@ -1,0 +1,3 @@
+# Home server passwords and world backups must never reach the public repo
+home/secrets.env
+*.tgz
