@@ -32,7 +32,10 @@ can use Docker, or put `sudo` in front of the `docker` commands.
    nano secrets.env
    ```
 
-4. Copy your world in. Extract the newest Azure backup into the savegame folder, then give it to user 10000:
+4. Copy your world in. If the Azure server is still up, run the `backup` action first. Then download the newest backup in PowerShell on your PC
+   (the list and download commands are in the Terraform repo's
+   [Back up and restore your world](https://github.com/phipcode/terraform/blob/main/environments/game/docs/backup-restore.md#restore-from-azure) guide),
+   copy it to this machine's home folder, extract it into the savegame folder, and give it to user 10000:
 
    ```bash
    sudo tar -xzf ~/enshrouded-<date>.tgz -C /srv/enshrouded/savegame
@@ -64,6 +67,19 @@ The server starts again by itself after a reboot.
 
 To keep the data somewhere other than `/srv/enshrouded`, create `home/.env` with
 `ENSHROUDED_DATA=/path/to/folder`, and use that path in steps 2 and 4.
+
+## Connect
+
+The server has the same name as the Azure one (set in `../azure/enshrouded_server.json`).
+In Enshrouded, go to **Play**, then **Join Game**, search for the name, and join with the player password.
+Friends need the router forward and firewall from step 6.
+
+If this machine runs it in WSL with mirrored networking, Windows also has to let the ports through to WSL.
+In an admin PowerShell on Windows:
+
+```powershell
+New-NetFirewallHyperVRule -Name Enshrouded -DisplayName "Enshrouded" -Direction Inbound -VMCreatorId '{40E0AC32-46A5-438A-A0B2-2B479E8F2E90}' -Protocol UDP -LocalPorts 15637,27015
+```
 
 ## Everyday use
 

@@ -4,6 +4,11 @@
 
 Run Enshrouded dedicated server in a container. Optionally includes helm chart for running in Kubernetes.
 
+**This fork** adds two ways to run the server with the same settings:
+
+- [azure/](azure/README.md): the main server, on an Azure VM managed from the `phipcode/terraform` repo.
+- [home/](home/README.md): the same server on your own Linux machine with Docker Compose, as a backup if Azure is down.
+
 **Disclaimer:** This is not an official image. No support, implied or otherwise is offered to any end user by the author or anyone else. Feel free to do what you please with the contents of this repo.
 
 ## Usage

@@ -2,10 +2,12 @@
 
 Settings for the Enshrouded server running on the Azure VM. The infrastructure is defined in the `phipcode/terraform` repo, under `environments/game`.
 
+The home server in [../home](../home/README.md) uses the same `enshrouded_server.json` and `fast-start.sh`, so a change here applies to both.
+
 ## Changing settings
 
 1. Edit `enshrouded_server.json` and push to `main`. It holds the server name, player slots and game settings.
-2. Run the **Game Server Power** workflow in the Terraform repo and choose `update`, or run `sudo /opt/enshrouded/repo/azure/update.sh` on the VM.
+2. Run the **Game Server Power** workflow in the Terraform repo and choose `update`, or run `sudo /opt/enshrouded/repo/azure/update.sh` on the VM. On the home server, run `git pull && docker compose up -d --force-recreate` in `home/`.
 
 This restarts the server, so players are disconnected.
 
